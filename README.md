@@ -7,11 +7,15 @@
 pnpm install -g @anthropic-ai/claude-code
 
 claude --version
-
-claude config list
-
-claude config set <KEY> <VALUE>
 ```
+
+## uage
+
+```bash
+./links.sh
+```
+
+到项目的 claude 中： 请根据 15-factor skill 评估一下当前项目的架构。
 
 ## ref:
 
