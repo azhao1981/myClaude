@@ -11,7 +11,6 @@ claude --version
 claude config list
 
 claude config set <KEY> <VALUE>
-
 ```
 
 ## ref:
