@@ -56,6 +56,10 @@ version: 3.0.0
   - **命名规范**：
     变量名必须全称，禁止 `res`, `tmp`, `data`, `info`。使用 `user_profile`, `payment_result` 等具体名称。
 
+## 4. Pydantic 数据验证（如果项目使用）
+
+- **BaseModel 必须设置** `protected_namespaces=()`，允许使用 `model` 等保留字段名（符合业界标准如 OpenAI API）
+
 # 最终检查清单 (Verification)
 
 在生成代码交付给用户前，执行以下自我审查：
@@ -64,3 +68,4 @@ version: 3.0.0
 2.  业务函数是否很短？（如果长，请拆分）
 3.  业务函数里是否没有 `logger.info`？（全靠装饰器）
 4.  是否只有复杂的函数才有 Docstring？（简单的全删掉）
+5.  如果使用 Pydantic，是否设置了 `protected_namespaces=()`？

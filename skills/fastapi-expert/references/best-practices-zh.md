@@ -248,6 +248,7 @@ class CustomModel(BaseModel):
     model_config = ConfigDict(
         json_encoders={datetime: datetime_to_gmt_str},
         populate_by_name=True,
+        protected_namespaces=(),  # 禁用不必要的字段名保护
     )
 
     def serializable_dict(self, **kwargs):
@@ -261,6 +262,11 @@ class CustomModel(BaseModel):
 
 - 将所有datetime字段序列化为具有显式时区的标准格式
 - 提供一个方法来返回仅包含可序列化字段的字典
+
+> **注意**：`protected_namespaces=()` 禁用了 Pydantic V2 对 `model_*` 等模式的默认保护。这是推荐做法，因为：
+> - 业界标准（如 OpenAI API）直接使用 `model` 作为字段名
+> - 字段命名应由业务领域决定，而非框架限制
+> - 真正的冲突（如 `model_dump`）在实际开发中极其罕见
 
 ### 拆分Pydantic BaseSettings
 

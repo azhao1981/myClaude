@@ -15,7 +15,7 @@ description: 专门用于 FastAPI 项目的架构设计、代码审查和开发�
 如果用户没有特殊要求，默认执行以下规范：
 - **异步原则**：除非有明确理由，否则一律使用 `async def` 和异步驱动。
 - **依赖注入**：利用 `Depends` 管理 Auth、DB Session 和配置。
-- **数据验证**：使用 Pydantic V2，并优先使用 `Annotated` 语法。
+- **数据验证**：使用 Pydantic V2，优先使用 `Annotated` 语法。所有 BaseModel 必须设置 `protected_namespaces=()`。
 - **响应模型**：明确定义 `response_model`，严禁直接返回 ORM 对象。
 - **项目结构**：遵循文档中的生产级目录拆分方案（`app/api`, `app/schemas` 等）。
 
