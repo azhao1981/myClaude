@@ -19,6 +19,10 @@ claude --version
 
 ## ref:
 
+让 gemini 帮写Prompt时一定要加上这个，不然他不认识skills
+
+https://code.claude.com/docs/en/skills
+
 [SKILLS](https://dx72dwmn5vc.feishu.cn/wiki/NLUbwM4S2iGZIUkmo8BcN53Qnhf)
 
 https://dx72dwmn5vc.feishu.cn/wiki/AlqIwSLsaiWjdKkycmbcrigTnig
