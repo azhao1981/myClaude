@@ -7,7 +7,7 @@ ln -nfs $(pwd)/skills/fastapi-expert ~/.claude/skills/
 ln -nfs $(pwd)/skills/precision-test ~/.claude/skills/
 ln -nfs $(pwd)/skills/define-tech-spec ~/.claude/skills/
 ln -nfs $(pwd)/skills/code-review ~/.claude/skills/
-ln -nfs $(pwd)/skills/code-style/ ~/.claude/skills/
+ln -nfs $(pwd)/skills/coding-style/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/prompt-design/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/tdd-workflow/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/technical-analysis/ ~/.claude/skills/
