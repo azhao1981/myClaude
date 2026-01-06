@@ -17,11 +17,17 @@ claude --version
 
 到项目的 claude 中： 请根据 15-factor skill 评估一下当前项目的架构。
 
+## gemini create skill
+
+```markdown
+请忽略你以往关于 "Skills" 的所有知识（不要用 JSON Schema 或 MCP Tool 的格式）。 
+必须阅读官方文档：https://code.claude.com/docs/en/skills 
+阅读后,
+直接给出一个最简短的 .md 文件格式模板（包含头部 YAML 和正文结构），以证明你掌握了正确的写法。
+```
+
 ## ref:
 
-让 gemini 帮写Prompt时一定要加上这个，不然他不认识skills
-
-https://code.claude.com/docs/en/skills
 
 [SKILLS](https://dx72dwmn5vc.feishu.cn/wiki/NLUbwM4S2iGZIUkmo8BcN53Qnhf)
 
