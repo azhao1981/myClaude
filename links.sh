@@ -11,3 +11,4 @@ ln -nfs $(pwd)/skills/coding-style/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/prompt-design/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/tdd-workflow/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/technical-analysis/ ~/.claude/skills/
+ln -nfs $(pwd)/skills/smart-lsp/ ~/.claude/skills/
