@@ -26,8 +26,13 @@ claude --version
 直接给出一个最简短的 .md 文件格式模板（包含头部 YAML 和正文结构），以证明你掌握了正确的写法。
 ```
 
+# Skill: Planning with Files
+这个是 manus 团队使用的技术，用于计划等
+
 ## ref:
 
+[太狠了！把 Manus 核心秘诀做成 Skills 开源，Claude 瞬间进化！](https://mp.weixin.qq.com/s/0WV89hNCPgsa9lZwTLYABg)
+https://github.com/OthmanAdi/planning-with-files
 
 [SKILLS](https://dx72dwmn5vc.feishu.cn/wiki/NLUbwM4S2iGZIUkmo8BcN53Qnhf)
 
@@ -35,6 +40,7 @@ https://dx72dwmn5vc.feishu.cn/wiki/AlqIwSLsaiWjdKkycmbcrigTnig
 
 ```bash
 git submodule add git@github.com:azhao1981/skills.git anthropics/skills
+git submodule add git@github.com:azhao1981/planning-with-files.git ref/planning-with-files
 # 初始化子模块
 git submodule init
 
