@@ -1,3 +1,6 @@
 [submodule "anthropics/skills"]
 	path = anthropics/skills
 	url = git@github.com:azhao1981/skills.git
+[submodule "ref/planning-with-files"]
+	path = ref/planning-with-files
+	url = git@github.com:azhao1981/planning-with-files.git
