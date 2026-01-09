@@ -46,4 +46,4 @@ description: 执行深度的五层技术分析并输出到文档。注意：除�
 
 ## 文档输出
 
-分析结果**必须写入** `docs/analysis/{topic}.md`(UTF-8),使用 Write 工具。
+分析结果**必须写入** 当前工作主目标文档 或 `[doc|docs]/analysis/{topic}.md`(UTF-8),使用 Write 工具。

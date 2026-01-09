@@ -39,6 +39,7 @@ https://github.com/OthmanAdi/planning-with-files
 https://dx72dwmn5vc.feishu.cn/wiki/AlqIwSLsaiWjdKkycmbcrigTnig
 
 ```bash
+git submodule add git@github.com:azhao1981/claude-plugins-official.git anthropics/claude-plugins-official
 git submodule add git@github.com:azhao1981/skills.git anthropics/skills
 git submodule add git@github.com:azhao1981/planning-with-files.git ref/planning-with-files
 git submodule add git@github.com:azhao1981/agents.git ref/wshobson/agents
@@ -59,4 +60,26 @@ git submodule update --remote
 git submodule deinit <path>
 git rm <path>
 rm -rf .git/modules/<path>
+```
+
+
+```bash
+claude plugin install code-simplifier
+/plugin install code-simplifier
+# 请使用code-simplifier帮我整理一下刚才修改的代码。
+
+# 更新
+/plugin marketplace update claude-plugins-official
+/plugin install code-simplifier@claude-plugins-official
+
+```
+
+.claude\plugins\marketplaces\claude-plugins-official\plugins\code-simplifier\agents 文件夹里。
+
+
+## language
+
+```bash
+❯ code ~/.claude/settings.json 
+"language": "chinese"
 ```
