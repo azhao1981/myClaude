@@ -4,3 +4,6 @@
 [submodule "ref/planning-with-files"]
 	path = ref/planning-with-files
 	url = git@github.com:azhao1981/planning-with-files.git
+[submodule "ref/wshobson/agents"]
+	path = ref/wshobson/agents
+	url = git@github.com:azhao1981/agents.git
