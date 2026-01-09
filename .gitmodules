@@ -7,3 +7,6 @@
 [submodule "ref/wshobson/agents"]
 	path = ref/wshobson/agents
 	url = git@github.com:azhao1981/agents.git
+[submodule "anthropics/claude-plugins-official"]
+	path = anthropics/claude-plugins-official
+	url = git@github.com:azhao1981/claude-plugins-official.git
