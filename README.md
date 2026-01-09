@@ -41,6 +41,7 @@ https://dx72dwmn5vc.feishu.cn/wiki/AlqIwSLsaiWjdKkycmbcrigTnig
 ```bash
 git submodule add git@github.com:azhao1981/skills.git anthropics/skills
 git submodule add git@github.com:azhao1981/planning-with-files.git ref/planning-with-files
+git submodule add git@github.com:azhao1981/agents.git ref/wshobson/agents
 # 初始化子模块
 git submodule init
 
