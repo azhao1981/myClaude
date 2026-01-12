@@ -1,6 +1,6 @@
 ---
 name: technical-analysis
-description: 执行深度的五层技术分析并输出到文档。核心原则：拒绝假定、伪代码抽象、专业图表、明确数据变更。
+description: 执行深度的五层技术分析并输出到文档。核心原则：拒绝假定、伪代码抽象、Mermaid 严格语法模式。
 ---
 
 # 五层技术分析法 (含文档输出)
@@ -14,14 +14,23 @@ description: 执行深度的五层技术分析并输出到文档。核心原则�
 - **工具**: 必须使用 `mermaid`。
 - **内容**: 绘制类图 (Class Diagram) 或 实体关系图 (ER Diagram)。
 
+### 1.1 Mermaid 语法铁律 (Syntax Guardrails)
+**为防止渲染失败，必须严格遵守以下规则：**
+1.  **ID 与 文本分离**: 节点 ID 必须是纯英文/数字（无空格）。显示文本必须用**双引号**包裹。
+    * ✅ 正确: `A["用户 (User)"] --> B{"是否登录?"}`
+    * ❌ 错误: `A[用户 (User)] --> B{是否登录?}`
+2.  **特殊字符转义**: 文本中若包含 `[]` `()` `{}` 等符号，必须转义或移除。
+3.  **简单优于复杂**: 不要使用复杂的 `style` 或 `classDef`，除非绝对必要。优先保证拓扑结构正确。
+
 ## 2. 逻辑抽象 (Logic Abstraction)
 - **代码禁令**: 严禁引用大段真实代码。
 - **形式**: 仅使用 **函数签名** 和 **伪代码** (如 `func(input) -> output`)。
 
 ## 3. 数据演进 (Data Evolution)
 - **核心**: 描述数据在存储层或传输层的变化。
-- **场景 A (结构变更)**: 如果涉及数据库修改，使用简化的映射格式：`Table.OldField -> Table.NewField`。
-- **场景 B (状态流转)**: 如果涉及数据状态变化（如订单状态），必须使用 Mermaid `stateDiagram`。
+- **场景 A (结构变更)**: 简化的映射格式：`Table.OldField -> Table.NewField`。
+- **场景 B (状态流转)**: 必须使用 `stateDiagram-v2`。
+    * **注意**: 同样遵循 1.1 中的“双引号”规则。
 - **严禁**: 粘贴大段 SQL `ALTER TABLE` 语句。
 
 ## 4. 复杂度与特例 (Complexity)
@@ -40,28 +49,41 @@ description: 执行深度的五层技术分析并输出到文档。核心原则�
 *(✅ 上下文清晰 / ❓ 待确认问题)*
 
 ### 2. 架构视图 (Architecture)
-*(此处插入 Mermaid 架构图)*
-
-### 3. 核心逻辑 (Core Logic)
-*(伪代码关键路径)*
-- `[Service A] -> [Service B]: Action`
-
-### 4. 数据演进 (Data Evolution)
-*(新增板块)*
-- **Schema 变更**:
-  - `User.preferences (JSON)` -> 拆分为 `UserPreferences` 表
-- **状态流转**:
-  ```mermaid
-  stateDiagram-v2
-    [*] --> Draft
-    Draft --> Published : approve()
+```mermaid
+graph TD
+    A["API 入口"] --> B{"验证参数?"}
+    B -- "Yes" --> C["处理逻辑"]
+    B -- "No" --> D["返回 400"]
 
 ```
+
+### 3. 核心逻辑 (Core Logic)
+
+*(伪代码关键路径)*
+
+* `[Service A] -> [Service B]: Action`
+
+### 4. 数据演进 (Data Evolution)
+
+* **Schema 变更**:
+* `User.data` -> `UserProfile` Table
+
+
+* **状态流转**:
+```mermaid
+stateDiagram-v2
+  [*] --> Draft
+  Draft --> Published : "approve()"
+  Published --> Archived : "archive()"
+
+```
+
+
 
 ### 5. 决策分析 (Decision Matrix)
 
 * **【核心判断】** ✅ 值得做 / ❌ 不值得做
-* **【方案对比】** (不含时间)
+* **【方案对比】**
 | 维度 | 方案 A | 方案 B |
 | --- | --- | --- |
 | 复杂度 | 低 | 高 |
