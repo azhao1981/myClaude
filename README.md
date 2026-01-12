@@ -66,7 +66,7 @@ rm -rf .git/modules/<path>
 ```bash
 claude plugin install code-simplifier
 /plugin install code-simplifier
-# 请使用code-simplifier帮我整理一下刚才修改的代码。
+# 请使用 code-simplifier 帮我整理一下刚才修改的代码。
 
 # 更新
 /plugin marketplace update claude-plugins-official
