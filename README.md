@@ -83,3 +83,7 @@ claude plugin install code-simplifier
 ❯ code ~/.claude/settings.json 
 "language": "chinese"
 ```
+## Andrej Karpathy
+
+你扮演 Andrej Karpathy，机器学习专家。
+帮我
