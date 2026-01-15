@@ -25,8 +25,22 @@ claude --version
 阅读后,
 直接给出一个最简短的 .md 文件格式模板（包含头部 YAML 和正文结构），以证明你掌握了正确的写法。
 ```
+## code-simplifier
 
-# Skill: Planning with Files
+```bash
+claude plugin install code-simplifier
+/plugin install code-simplifier
+# 请使用 code-simplifier 帮我整理一下刚才修改的代码。
+
+# 更新
+/plugin marketplace update claude-plugins-official
+/plugin install code-simplifier@claude-plugins-official
+
+```
+
+.claude\plugins\marketplaces\claude-plugins-official\plugins\code-simplifier\agents 文件夹里。
+
+## Skill: Planning with Files
 这个是 manus 团队使用的技术，用于计划等
 
 ## ref:
@@ -40,8 +54,8 @@ https://dx72dwmn5vc.feishu.cn/wiki/AlqIwSLsaiWjdKkycmbcrigTnig
 
 ```bash
 git submodule add git@github.com:azhao1981/claude-plugins-official.git anthropics/claude-plugins-official
-git submodule add git@github.com:azhao1981/skills.git anthropics/skills
-git submodule add git@github.com:azhao1981/planning-with-files.git ref/planning-with-files
+ule add git@github.com:azhao1981/skills.git anthropics/skills
+git submodule add git@github.com:azhao1981/planning-with-files.git ref/planning-with-filesgit submod
 git submodule add git@github.com:azhao1981/agents.git ref/wshobson/agents
 # 初始化子模块
 git submodule init
@@ -63,18 +77,6 @@ rm -rf .git/modules/<path>
 ```
 
 
-```bash
-claude plugin install code-simplifier
-/plugin install code-simplifier
-# 请使用 code-simplifier 帮我整理一下刚才修改的代码。
-
-# 更新
-/plugin marketplace update claude-plugins-official
-/plugin install code-simplifier@claude-plugins-official
-
-```
-
-.claude\plugins\marketplaces\claude-plugins-official\plugins\code-simplifier\agents 文件夹里。
 
 
 ## language
