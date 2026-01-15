@@ -1,12 +1,16 @@
-# Fast Api最佳实践指南
+# FastAPI 最佳实践指南
 
 这是我在初创公司使用的一系列最佳实践和约定。
 
 在过去几年的生产实践中，我们做过一些好的和不好的决策，这些决策极大地影响了开发者体验。其中一些经验值得分享。
 
 ## 目录
-- [Fast Api最佳实践指南](#fast-api最佳实践指南)
+- [FastAPI 最佳实践指南](#fastapi-最佳实践指南)
   - [目录](#目录)
+  - [分层架构设计](#分层架构设计)
+    - [职责边界](#职责边界)
+    - [调用链规则](#调用链规则)
+    - [数据流向](#数据流向)
   - [项目结构](#项目结构)
   - [异步路由](#异步路由)
     - [I/O密集型任务](#io密集型任务)
@@ -33,7 +37,301 @@
     - [使用ruff](#使用ruff)
   - [额外部分](#额外部分)
   
+## 分层架构设计
+
+FastAPI 应用应当遵循清晰的分层架构，每层有明确的职责边界。这不仅是代码组织的问题，更是关于**关注点分离**（Separation of Concerns）和**单一职责原则**（Single Responsibility Principle）的工程实践。
+
+### 职责边界
+
+| 层级 | 职责 | 不应包含 | 示例 |
+|------|------|----------|------|
+| **Controller / Router** | 接收 HTTP 请求、参数验证、返回响应 | 业务逻辑、数据库操作 | `@router.post("/users")` |
+| **Service** | 业务逻辑、流程编排、事务控制 | SQL/ORM 查询、HTTP 协议细节 | `register_user()`, `transfer_money()` |
+| **Repository** | 数据访问抽象、CRUD 操作 | 业务规则、HTTP 状态码 | `get_by_email()`, `create()` |
+| **Model (ORM)** | 数据库表映射 | 业务逻辑、API 协议 | SQLAlchemy 类定义 |
+| **Schema (DTO)** | 输入输出数据结构验证 | 数据库访问 | Pydantic 类定义 |
+
+**核心原则**：
+- **Service 层是纯净的业务逻辑层**，不应感知 HTTP 协议（如 HTTPException、状态码）
+- **Repository 层封装所有数据访问**，Service 层不应包含 SQL 或 ORM 查询代码
+- **Controller 层尽可能薄**，只负责请求响应转换
+
+### 调用链规则
+
+```
+请求流向: Client → Controller → Service → Repository → Database
+响应流向: Database → Repository → Service → Controller → Client
+```
+
+**严格的单向依赖**：
+- 上层可以调用下层，下层绝不依赖上层
+- Service 可以依赖 Repository，但 Repository 不知道 Service 的存在
+
+```python
+# ✅ 正确：Service 依赖 Repository
+class UserService:
+    def __init__(self, user_repo: UserRepository):
+        self.user_repo = user_repo
+
+    def get_user(self, email: str) -> UserDTO:
+        user = self.user_repo.get_by_email(email)  # 通过 repo 获取
+        if not user:
+            raise UserNotFoundError(email)  # 抛业务异常，非 HTTPException
+        return UserDTO.model_validate(user)  # 转换为 DTO
+
+# ❌ 错误：Service 直接操作 ORM
+class UserService:
+    def get_user(self, db: Session, email: str):
+        return db.query(UserModel).filter(UserModel.email == email).first()
+```
+
+### 数据流向
+
+**关键规则：DTO ↔ ORM 转换必须在 Service 层完成**
+
+```python
+# schemas/user.py (DTO / Schema)
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserResponse(BaseModel):
+    id: UUID
+    email: EmailStr
+    created_at: datetime
+
+# models/user.py (ORM)
+class User(Base):
+    __tablename__ = "users"
+    id: UUID = Column(UUID, primary_key=True)
+    email: String = Column(String, unique=True)
+    password_hash: String = Column(String)  # 敏感字段不应暴露
+
+# service/user.py
+class UserService:
+    def create_user(self, data: UserCreate) -> UserResponse:
+        # 1. DTO → ORM 转换
+        user_model = UserModel(
+            email=data.email,
+            password_hash=hash_password(data.password)
+        )
+
+        # 2. 存库（通过 Repository）
+        saved_user = self.user_repo.create(user_model)
+
+        # 3. ORM → DTO 转换
+        return UserResponse.model_validate(saved_user)
+```
+
+**为什么必须分离**：
+1. **安全性**：防止 `password_hash`、`deleted_at` 等字段泄露给前端
+2. **解耦**：数据库结构变化不影响 API 接口
+3. **灵活性**：同一 ORM 可组合成不同的 DTO
+
+### Repository 模式实现
+
+Repository 封装所有数据访问逻辑，使 Service 层与数据源解耦：
+
+```python
+# repositories/user.py
+class UserRepository:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+
+    async def get_by_email(self, email: str) -> UserModel | None:
+        result = await self.db.execute(
+            select(UserModel).where(UserModel.email == email)
+        )
+        return result.scalar_one_or_none()
+
+    async def create(self, user: UserModel) -> UserModel:
+        self.db.add(user)
+        await self.db.flush()  # 注意：不 commit，由 UoW 控制
+        return user
+```
+
+**Repository 的好处**：
+- **可测试性**：可以 Mock Repository 测试 Service
+- **可替换性**：切换数据库只需改 Repository
+- **复用性**：复杂查询逻辑可在多个 Service 中复用
+
+### 分层依赖注入
+
+使用 FastAPI 的 `Depends` 实现自动化的分层注入：
+
+```python
+# dependencies.py
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_maker() as session:
+        yield session
+
+def get_user_repo(db: AsyncSession = Depends(get_db)) -> UserRepository:
+    return UserRepository(db)
+
+def get_user_service(repo: UserRepository = Depends(get_user_repo)) -> UserService:
+    return UserService(repo)
+
+# router.py
+@router.post("/users", response_model=UserResponse)
+async def create_user(
+    data: UserCreate,
+    service: UserService = Depends(get_user_service)  # 自动注入整个依赖链
+):
+    return service.create_user(data)
+```
+
+**注入链自动解析**：
+```
+Controller.get_user_service()
+  → Depends(get_user_service)
+    → Depends(get_user_repo)
+      → Depends(get_db)
+```
+
+### 统一异常处理
+
+Service 层抛出**纯业务异常**，由全局异常处理器映射为 HTTP 状态码：
+
+```python
+# exceptions.py
+class AppException(Exception):
+    """应用基础异常"""
+
+class UserNotFoundError(AppException):
+    """用户不存在 - 纯业务异常，不包含 HTTP 概念"""
+
+class InsufficientBalanceError(AppException):
+    """余额不足"""
+
+# service/user.py
+async def get_user(self, user_id: UUID) -> UserDTO:
+    user = await self.user_repo.get_by_id(user_id)
+    if not user:
+        raise UserNotFoundError(f"User {user_id} not found")  # 纯业务异常
+    return UserDTO.model_validate(user)
+
+# main.py (全局异常处理)
+@app.exception_handler(UserNotFoundError)
+async def user_not_found_handler(request: Request, exc: UserNotFoundError):
+    return JSONResponse(
+        status_code=status.HTTP_404_NOT_FOUND,
+        content={"error": "USER_NOT_FOUND", "message": str(exc)}
+    )
+
+@app.exception_handler(InsufficientBalanceError)
+async def insufficient_balance_handler(request: Request, exc: InsufficientBalanceError):
+    return JSONResponse(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        content={"error": "INSUFFICIENT_BALANCE", "message": str(exc)}
+    )
+```
+
+**为什么 Service 层不应抛 HTTPException**：
+- Service 层应可在非 HTTP 环境复用（如 CLI、测试、消息队列）
+- 业务逻辑与 HTTP 协议解耦
+- 统一的异常响应格式
+
+### Unit of Work（工作单元模式）
+
+当 Service 需要操作多个 Repository 时，使用 Unit of Work 模式管理事务边界：
+
+```python
+# repositories/unit_of_work.py
+class UnitOfWork:
+    def __init__(self, db: AsyncSession):
+        self.db = db
+        self.users = UserRepository(db)
+        self.accounts = AccountRepository(db)
+        self.transactions = TransactionRepository(db)
+
+    async def commit(self):
+        await self.db.commit()
+
+    async def rollback(self):
+        await self.db.rollback()
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            await self.rollback()
+        else:
+            await self.commit()
+
+# service/payment.py
+class PaymentService:
+    async def transfer_money(self, from_id: UUID, to_id: UUID, amount: Decimal):
+        async with self.uow as uow:  # 开启事务边界
+            from_acc = await uow.accounts.get_by_id(from_id)
+            to_acc = await uow.accounts.get_by_id(to_id)
+
+            if from_acc.balance < amount:
+                raise InsufficientBalanceError(f"Insufficient balance: {from_acc.balance}")
+
+            from_acc.balance -= amount
+            to_acc.balance += amount
+
+            await uow.transactions.create(
+                Transaction(from_id=from_id, to_id=to_id, amount=amount)
+            )
+
+            # await uow.commit()  # 由 __aexit__ 自动处理
+        # 异常时自动 rollback
+```
+
+**UoW 的核心价值**：
+- **原子性**：多个 Repository 操作在同一事务中
+- **一致性**：全部成功或全部回滚
+- **职责清晰**：Repository 不负责 commit，由 Service 控制事务边界
+
+### 架构图
+
+```mermaid
+graph TD
+    A[Client Request] -->|HTTP + JSON| B[Controller / Router]
+    B -->|Pydantic DTO| C[Service Layer]
+    C -->|Domain Model| D[Repository Layer]
+    D -->|SQLAlchemy ORM| E[(Database)]
+
+    C -.->|Business Exception| F[Global Exception Handler]
+    F -->|HTTP Status Code| A
+
+    G[Dependency Injection] -.->|Injects| B
+    G -.->|Injects| C
+    G -.->|Injects| D
+```
+
 ## 项目结构
+
+基于上述分层架构，推荐的项目结构在原有基础上增加 `repositories/` 目录：
+
+```
+fastapi-project
+├── alembic/
+├── src
+│   ├── auth
+│   │   ├── router.py           # Controllers
+│   │   ├── schemas.py          # Pydantic DTOs
+│   │   ├── models.py           # SQLAlchemy ORM
+│   │   ├── dependencies.py     # DI 容器
+│   │   ├── service.py          # Business Logic
+│   │   ├── repository.py       # NEW: Data Access Layer
+│   │   ├── config.py
+│   │   ├── constants.py
+│   │   ├── exceptions.py       # Business Exceptions
+│   │   └── utils.py
+│   ├── repositories/           # NEW: Shared/Complex Repositories
+│   │   ├── __init__.py
+│   │   └── unit_of_work.py
+│   ├── config.py
+│   ├── models.py
+│   ├── exceptions.py           # Global Exception Base
+│   ├── database.py
+│   └── main.py                 # Global Exception Handlers
+├── tests/
+└── requirements/
+```
 
 项目结构有很多种，但最好的结构是一致、直观且没有意外的。
 
