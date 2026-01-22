@@ -89,3 +89,13 @@ rm -rf .git/modules/<path>
 
 你扮演 Andrej Karpathy，机器学习专家。
 帮我
+
+## remotion Create real MP4 videos with React. 
+
+https://www.remotion.dev/
+
+https://linux.do/t/topic/1497611
+
+https://skills.sh/remotion-dev/skills
+
+https://github.com/remotion-dev/skills
