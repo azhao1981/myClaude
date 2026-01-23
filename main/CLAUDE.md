@@ -20,13 +20,24 @@
    - **测试即生产**: 严禁在测试中执行破坏性操作。
    - **无痕测试**: 测试数据必须隔离。
 3. **Migration**: 严禁直接运行数据库 Migration。
+4. **脚本留痕 (Script Tracing)**:
+   - 使用 python/curl 等工具写脚本测试时，**禁止 inline command**。
+   - 必须写入 `$project_dir/tmp/` 目录，文件名需体现用途（如 `/tmp/test_user_api.py`）。
+   - 目的：方便复用、留痕、审计。
+   - **SQL 例外条款**:
+     - 简单查询、探索性查询、调试查询：**直接使用** `psql`/`mysql` 命令行。
+     - 仅当需要复杂数据处理（循环、条件逻辑、多步操作）时，才写 Python 脚本。
+     - 原则：**能用一条 SQL 解决的，禁止用 Python 包装**。
 
 ## 技能路由 (Skill Routing)
 - **分析/决策/方案** -> 自动应用 `technical-analysis`
 - **审查 (代码 或 文档)** -> 自动应用 `code-review` (文档也需 Review)
 - **写代码/修改/重构** -> 自动应用 `coding-style`
-- **新功能/测试/TDD** -> 自动应用 `tdd-workflow`
+- **简化/精简代码** -> 自动应用 `code-simplifier`
+- **新功能/测试/TDD/test** -> 自动应用 `tdd-workflow`
+- **规划/组织工作/跟踪进度** -> 自动应用 `planning-with-files-cn`
 - **Dify/Prompt** -> 自动应用 `prompt-design`
+- **SQL 查询/数据库操作** -> 自动应用 `sql-query`
 
 ## 交互与输出风格
 - **禁止过度说明**: 闭嘴干活。
