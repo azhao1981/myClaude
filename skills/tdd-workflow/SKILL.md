@@ -1,3 +1,7 @@
+---
+name: tdd-workflow
+description: 全真业务 TDD 工作流。强制贯通真实链路（DB/Redis/API），严禁 Mock，零后门操作。适用于新功能开发、测试驱动开发、测试、以及"test it"/"verify fix"场景。
+---
 
 # Skill: Real-World TDD Workflow (全真业务 TDD)
 
@@ -11,6 +15,7 @@
 1. **报错即导航 (Error Driven)**: 报错是未完成的需求。阅读日志来决定下一步动作。
 2. **严禁 Mock (No Mocks)**: 必须贯通真实业务链路（DB/Redis/API）。
 3. **零后门操作 (No Backdoor Access)**: 测试代码**严禁**直接执行 SQL (DELETE/UPDATE/INSERT) 来准备或清理数据。所有数据变更必须通过**业务功能代码**（Service/API）完成。
+4. **先验证根因，再修复 (Verify Before Fix)**: 修复失败测试前，必须先追踪实际数据流（数据库查询、日志分析）确认根因，**严禁**通过篡改测试数据来凑通过。
 
 ## 输入参数 (Input Parameters)
 

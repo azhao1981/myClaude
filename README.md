@@ -26,6 +26,7 @@ claude --version
 直接给出一个最简短的 .md 文件格式模板（包含头部 YAML 和正文结构），以证明你掌握了正确的写法。
 ```
 ## code-simplifier
+这个现在改成agent code-simplifier:code-simplifier 了
 
 ```bash
 claude plugin install code-simplifier
