@@ -43,7 +43,7 @@
 - **审查 (代码 或 文档)** -> 自动应用 `code-review` (文档也需 Review)
 - **写代码/修改/重构** -> 自动应用 `coding-style`
 - **简化/精简代码** -> 自动应用 `code-simplifier`
-- **新功能/测试/TDD/test** -> 自动应用 `tdd-workflow`
+- **新功能/测试/测试用例/写测试/补测试/TDD/test/test case** -> 自动应用 `tdd-workflow`
 - **规划/组织工作/跟踪进度** -> 自动应用 `planning-with-files-cn`
 - **Dify/Prompt** -> 自动应用 `prompt-design`
 - **SQL 查询/数据库操作** -> 自动应用 `sql-query`

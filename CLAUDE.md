@@ -38,7 +38,7 @@ git submodule update --remote
 | `technical-analysis` | 用户说"分析"、方案设计 | 五层技术分析，含 Mermaid 架构图、数据演进、决策矩阵 |
 | `code-review` | "Review"、"审查"代码/文档 | 代码/文档质量审查，KISS 原则检查 |
 | `coding-style` | 写代码/修改/重构 | 极简主义编码，禁止过度注释，最小 Git Diff |
-| `tdd-workflow` | 新功能/TDD 开发 | 全真业务 TDD，禁 Mock，零后门操作 |
+| `tdd-workflow` | 新功能/测试/测试用例/写测试/补测试/TDD/test case | Outside-In TDD，内部真实链路，外部 Mock |
 | `precision-test` | "test it"、"verify fix" | 精准单测试运行，禁全量测试 |
 | `python-expert` | Python 编码任务 | Service Layer 架构，装饰器日志，KISS 风格 |
 | `fastapi-expert` | FastAPI 项目 | 分层架构 (Controller-Service-Repository)，DTO 转换 |
@@ -53,7 +53,7 @@ git submodule update --remote
 - **分析/决策/方案** → `technical-analysis`
 - **审查代码/文档** → `code-review`
 - **写代码/修改/重构** → `coding-style`
-- **新功能/测试/TDD** → `tdd-workflow`
+- **新功能/测试/测试用例/写测试/补测试/TDD/test case** → `tdd-workflow`
 - **Dify/Prompt 设计** → `prompt-design`
 
 ## 核心约束
