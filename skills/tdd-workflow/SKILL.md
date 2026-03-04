@@ -13,7 +13,8 @@ description: 全真业务 TDD 工作流。Outside-In 驱动，从最外层 HTTP 
 **核心哲学:**
 
 1. **Outside-In (由外向内)**: 第一个测试必须从**最外层 HTTP Controller**（即接收 HTTP 请求的 endpoint）开始。注意：这里的"API"**专指 HTTP Controller 层**，而非 Service 层方法或内部模块间调用。内部的 Service、Repository 等实现细节，只在测试报错时才去编写。禁止跳过 Controller 直接测内部实现。
-2. **报错即导航 (Error Driven)**: 报错是未完成的需求。阅读日志来决定下一步动作。
+2. **Happy Path 优先**: 第一个测试用例必须是**正向成功路径**（正常输入、正常流程），而非边界或异常情况。拿到第一个绿灯后再处理边界/失败用例。
+3. **报错即导航 (Error Driven)**: 报错是未完成的需求。阅读日志来决定下一步动作。
 3. **内部依赖走真实链路，外部依赖用 Mock**:
    - **内部依赖**（自有 DB/Redis/MQ）：必须贯通真实链路，严禁 Mock。
    - **外部依赖**（第三方 API、支付网关、短信服务、邮件服务等不可控的外部系统）：**必须 Mock/Stub**，因为它们不可控、可能产生真实费用、会导致测试不稳定。
@@ -48,6 +49,11 @@ description: 全真业务 TDD 工作流。Outside-In 驱动，从最外层 HTTP 
 1. **最优先**: HTTP Controller endpoint — 如果功能有 HTTP 入口，第一个测试**必须**通过 HTTP 请求调用 Controller。**注意**：这里指的是真正的 HTTP 请求（如 `TestClient.post("/api/users")`），不是直接调用 Service 层方法。
 2. **次选**: Service 层公开方法 — **仅当**功能完全没有 HTTP 入口时（如内部定时任务、事件处理器、CLI 命令）。
 3. **禁止**: 直接测试 Repository/DAO/私有方法 — 这些细节应由外层测试的失败来驱动产生。
+
+**用例选择原则**：
+- **第一个用例必须是 Happy Path**（如正常创建用户、正常登录、正常查询），确保核心业务逻辑能工作。
+- **第二个用例才是边界情况**（空值、超限、重复提交等）。
+- **最后才是异常/错误情况**（权限拒绝、资源不存在等）。
 
 * **动作**: 通过 HTTP 请求调用 Controller endpoint（最优先），或调用 Service 公开方法（次选）。
 * **断言**: 检查业务副作用。
@@ -104,7 +110,8 @@ description: 全真业务 TDD 工作流。Outside-In 驱动，从最外层 HTTP 
 ## 铁律 (The Iron Laws)
 
 1. **Outside-In 不可违**: 第一个测试必须从 **HTTP Controller endpoint** 开始，内部实现由失败测试驱动。
-2. **内部真实，外部隔离**: 自有基础设施走真实链路；第三方外部服务必须 Mock。
+2. **Happy Path 优先**: 第一个测试用例必须是正向成功路径，先验证核心逻辑能工作，再处理边界/异常。
+3. **内部真实，外部隔离**: 自有基础设施走真实链路；第三方外部服务必须 Mock。
 3. **测试无特权**: 测试代码禁止直接执行 DML（DELETE/UPDATE/INSERT）或 DDL（CREATE/DROP），包括 setUp/tearDown 钩子中。
 4. **遇阻即停**: 环境连接问题或 Schema 变更需求，必须停下来与用户交互。
 5. **逐个击破**: 一次只写一个测试，只运行一个测试，通过后再写下一个。
