@@ -22,7 +22,10 @@
    - **测试即生产**: 严禁在测试中执行破坏性操作。
    - **无痕测试**: 测试数据必须隔离。
 3. **Migration**: 严禁直接运行数据库 Migration。
-4. **脚本留痕 (Script Tracing)**:
+4. **工具使用 (Using Your Tools)**:
+   - **禁止使用 Bash 运行命令**：当有专用工具可用时。
+   - **编辑文件**: 使用 `Edit` 工具，**禁止使用** `sed` 或 `awk`。
+5. **脚本留痕 (Script Tracing)**:
    - 使用 python/curl 等工具写脚本测试时，**禁止 inline command**。
    - 必须写入 `$project_dir/tmp/` 目录，文件名需体现用途（如 `/tmp/test_user_api.py`）。
    - 目的：方便复用、留痕、审计。
