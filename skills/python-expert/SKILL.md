@@ -2,7 +2,7 @@
 name: python-expert
 description: Python 开发终极指南。强制执行：Service Layer 架构、KISS 极简代码风格、以及基于装饰器的全自动结构化日志。
 author: You
-version: 3.1.0
+version: 4.0.0
 ---
 
 # Python Expert Development Guidelines
@@ -17,13 +17,32 @@ version: 3.1.0
   *告诉用户："检测到项目中缺失标准日志模块，我已自动为您创建 `utils/log_decorator.py`。"*
 
 ## 1. 架构规范 (Architecture)
-- **Controller (瘦接口)**：
-  - 代码行数限制：< 20 行。
-  - 职责：仅负责 Pydantic 参数校验、调用 Service、返回 HTTP Response。
-  - **严禁**：编写业务逻辑、SQL 查询。
-- **Service (核心业务)**：
-  - 职责：处理所有业务逻辑、事务管理。
-  - **KISS 原则**：不要过度封装。如果逻辑简单，直接写函数；只有需要状态管理时才写 Class。
+
+**核心风格**：**面向对象 (OOP)** 为第一原则，以类为组织单元，实例属性承载状态。
+
+### 1.1 Service 层设计规范
+
+- **【推荐】使用类封装**：所有业务 Service 应写成 Class，使用实例属性管理状态。
+- **【推荐】实例方法 + 实例属性**：使用 `self.xxx` 访问配置、客户端、缓存，而非通过参数传递。
+- **【避免】静态方法**：减少使用 `@staticmethod`，优先使用实例方法。
+- **【避免】纯函数式 Service**：将 Service 写成一组纯函数，宜使用类封装。
+
+### 1.2 工具类/辅助类设计规范
+
+- **解析器 (Parser)**：推荐使用类封装，实例方法而非静态方法。
+- **客户端 (Client)**：推荐使用类封装，配置通过 `__init__` 注入。
+- **数据转换**：简单转换可用函数，复杂转换推荐使用类。
+
+### 1.3 Controller 层 (瘦接口)
+
+- 代码行数限制：< 20 行。
+- 职责：仅负责 Pydantic 参数校验、调用 Service、返回 HTTP Response。
+- **严禁**：编写业务逻辑、SQL 查询。
+
+### 1.4 KISS 原则
+
+- 无状态逻辑可用函数（如纯计算、数据转换）；有状态时必须用 Class。
+- 不要过度封装，但一旦需要状态管理，立即使用类。
 
 ## 2. 日志规范 (Logging Strategy)
 **目标**：通过 AOP (切面编程) 实现全自动排查能力，保持业务代码纯净。
@@ -52,9 +71,11 @@ version: 3.1.0
 
 # 最终检查清单 (Verification)
 
-1.  是否已经自动创建了 `utils/log_decorator.py`？
-2.  业务函数是否很短？（如果长，请拆分）
-3.  业务函数里是否没有 `logger.info`？（全靠装饰器）
-4.  是否只有复杂的函数才有 Docstring？（简单的全删掉）
-5.  如果使用 Pydantic，是否设置了 `protected_namespaces=()`？
-6.  `__init__.py` 是否只包含导出？（实现代码必须在独立模块中）
+1.  **是否优先使用类和实例方法**？（避免使用 `@staticmethod`）
+2.  Service 的配置/客户端是否通过实例属性 (`self.xxx`) 获取？（而非参数传递）
+3.  业务函数是否很短？（如果长，请拆分）
+4.  业务函数里是否没有 `logger.info`？（全靠装饰器）
+5.  是否只有复杂的函数才有 Docstring？（简单的全删掉）
+6.  如果使用 Pydantic，是否设置了 `protected_namespaces=()`？
+7.  `__init__.py` 是否只包含导出？（实现代码必须在独立模块中）
+8.  是否已经自动创建了 `utils/log_decorator.py`？

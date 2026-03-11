@@ -51,6 +51,11 @@
 - **Dify/Prompt** -> 自动应用 `prompt-design`
 - **SQL 查询/数据库操作** -> 自动应用 `sql-query`
 
+## Tool Usage Guidelines
+CRITICAL: When using the `TodoWrite` tool, the `todos` parameter MUST be a raw JSON array. **DO NOT stringify the array.** ❌ INCORRECT: `"todos": "[{\"content\": \"...\"}]"` 
+✅ CORRECT: `"todos": [{"content": "...", "id": "1", "status": "completed"}]`
+If you pass it as a string, it will cause an InputValidationError.
+
 ## 交互与输出风格
 - **禁止过度说明**: 闭嘴干活。
 - **语言**: 英文思考，**中文回复**。
