@@ -58,6 +58,7 @@ git submodule add git@github.com:azhao1981/claude-plugins-official.git anthropic
 ule add git@github.com:azhao1981/skills.git anthropics/skills
 git submodule add git@github.com:azhao1981/planning-with-files.git ref/planning-with-filesgit submod
 git submodule add git@github.com:azhao1981/agents.git ref/wshobson/agents
+git submodule add git@github.com:azhao1981/andrej-karpathy-skills.git ref/andrej-karpathy-skills
 # 初始化子模块
 git submodule init
 
