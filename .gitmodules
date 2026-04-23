@@ -13,3 +13,6 @@
 [submodule "ref/andrej-karpathy-skills"]
 	path = ref/andrej-karpathy-skills
 	url = git@github.com:azhao1981/andrej-karpathy-skills.git
+[submodule "anthropics/claude-code"]
+	path = anthropics/claude-code
+	url = git@gitee.com:azhao-1981/anthropics-claude-code.git
