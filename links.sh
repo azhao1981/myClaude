@@ -13,5 +13,7 @@ ln -nfs $(pwd)/skills/tdd-workflow/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/technical-analysis/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/smart-lsp/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/sql-query/ ~/.claude/skills/
+ln -nfs $(pwd)/skills/GoF-OOP/ ~/.claude/skills/
+ln -nfs $(pwd)/skills/skill-craft/ ~/.claude/skills/
 
 ls -alF --color=always ~/.claude/skills/

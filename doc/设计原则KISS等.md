@@ -1,6 +1,7 @@
 # KISS YAGNI DIY
 
 ## KISS
+
 https://time.geekbang.org/column/article/177448 看他的脑图
 
 ## YAGNI
