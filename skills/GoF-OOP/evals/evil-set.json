@@ -1,0 +1,62 @@
+{
+  "skill": "GoF-OOP",
+  "type": "routing-evil",
+  "description": "这些请求不应该触发 GoF-OOP Skill",
+  "cases": [
+    {
+      "query": "给我解释一下策略模式的定义",
+      "expect": "not_load",
+      "why": "概念学习——教学任务，不是设计决策"
+    },
+    {
+      "query": "帮我写一个简单的加减法函数",
+      "expect": "not_load",
+      "why": "纯实现，无设计决策"
+    },
+    {
+      "query": "这个NullPointerException怎么修",
+      "expect": "not_load",
+      "why": "调试任务"
+    },
+    {
+      "query": "帮我搭一个Spring Boot项目",
+      "expect": "not_load",
+      "why": "基础设施搭建"
+    },
+    {
+      "query": "SOLID原则分别是什么意思",
+      "expect": "not_load",
+      "why": "概念学习——模型已知知识"
+    },
+    {
+      "query": "帮我写个REST API",
+      "expect": "not_load",
+      "why": "API 搭建，非设计决策"
+    },
+    {
+      "query": "代码报错了帮我看看",
+      "expect": "not_load",
+      "why": "调试任务"
+    },
+    {
+      "query": "帮我提取几个函数，这段代码太长了",
+      "expect": "not_load",
+      "why": "简单函数抽取，非 OOP 设计"
+    },
+    {
+      "query": "什么是依赖注入",
+      "expect": "not_load",
+      "why": "概念学习"
+    },
+    {
+      "query": "这个if-else太多了，帮我简化一下",
+      "expect": "not_load",
+      "why": "代码风格/简化——coding-style 的活"
+    },
+    {
+      "query": "帮我写个单元测试",
+      "expect": "not_load",
+      "why": "tdd-workflow 的活"
+    }
+  ]
+}

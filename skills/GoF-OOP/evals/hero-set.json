@@ -1,0 +1,67 @@
+{
+  "skill": "GoF-OOP",
+  "type": "routing-hero",
+  "description": "这些请求应该触发 GoF-OOP Skill",
+  "cases": [
+    {
+      "query": "这个支付流程用策略模式还是状态模式好？",
+      "expect": "load",
+      "why": "模式选型——核心触发场景"
+    },
+    {
+      "query": "怎么把这段继承改成组合？",
+      "expect": "load",
+      "why": "OOP 重构——继承转组合"
+    },
+    {
+      "query": "这个接口怎么设计才符合开闭原则？",
+      "expect": "load",
+      "why": "OOP 设计原则落地"
+    },
+    {
+      "query": "工厂模式和建造者模式在这个场景怎么选？",
+      "expect": "load",
+      "why": "创建型模式对比选型"
+    },
+    {
+      "query": "怎么用装饰器模式给这个类扩展功能？",
+      "expect": "load",
+      "why": "具体模式实现指导"
+    },
+    {
+      "query": "这个类的职责太多，怎么用OOP拆分？",
+      "expect": "load",
+      "why": "职责拆分——核心 OOP 重构"
+    },
+    {
+      "query": "mfcOrders 这个类怎么隔离基础设施依赖？",
+      "expect": "load",
+      "why": "变量名带技术前缀——领域隔离信号"
+    },
+    {
+      "query": "我想给订单模块加个接口，以后可能要换实现",
+      "expect": "load",
+      "why": "接口抽象设计——依赖倒置"
+    },
+    {
+      "query": "这种继承层次合理吗，还是用组合更好？",
+      "expect": "load",
+      "why": "继承 vs 组合判断"
+    },
+    {
+      "query": "帮我设计一个审批流程的代码结构",
+      "expect": "load",
+      "why": "流程设计——Chain of Responsibility 或 State 模式适用"
+    },
+    {
+      "query": "这个观察者模式的实现有没有问题，总感觉会内存泄漏",
+      "expect": "load",
+      "why": "模式实现审查 + 陷阱诊断"
+    },
+    {
+      "query": "怎么让支付模块支持多种支付方式，还能方便加新的？",
+      "expect": "load",
+      "why": "策略模式典型场景"
+    }
+  ]
+}
