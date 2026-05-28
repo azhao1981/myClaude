@@ -25,6 +25,8 @@ https://github.com/rtk-ai/rtk/blob/develop/README_zh.md
 curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 rtk --version   # 应显示 "rtk 0.27.x"
 rtk init --global
+
+rtk gain # 查看节省情况
 ```
 
 ## gemini create skill
