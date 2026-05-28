@@ -17,6 +17,16 @@ claude --version
 
 到项目的 claude 中： 请根据 15-factor skill 评估一下当前项目的架构。
 
+## rtk 减少 token 消耗
+
+https://github.com/rtk-ai/rtk/blob/develop/README_zh.md
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+rtk --version   # 应显示 "rtk 0.27.x"
+rtk init --global
+```
+
 ## gemini create skill
 
 ```markdown
