@@ -46,6 +46,7 @@ git submodule update --remote
 | `15-factor-assessor` | 架构评审、云原生评估 | 15-Factor App 标准，配置管理检查 |
 | `smart-lsp` | 代码导航、符号搜索 | LSP 工具优先，命令行工具降级 |
 | `define-tech-spec` | 技术文档编写 | 生成内部技术规格，纯工程内容 |
+| `intent-clarifier` | "意图识别"、"三是三不是"、需求范围界定 | 核心意图提取 + 三是三不是边界合同 |
 
 ## 技能路由规则
 
@@ -55,6 +56,7 @@ git submodule update --remote
 - **写代码/修改/重构** → `coding-style`
 - **新功能/测试/测试用例/写测试/补测试/TDD/test case** → `tdd-workflow`
 - **Dify/Prompt 设计** → `prompt-design`
+- **意图识别/三是三不是/需求边界** → `intent-clarifier`
 
 ## 核心约束
 
