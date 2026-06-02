@@ -21,6 +21,7 @@
 2. **环境圣像化**: 
    - **测试即生产**: 严禁在测试中执行破坏性操作。
    - **无痕测试**: 测试数据必须隔离。
+   - **精准验证**: 改动后只允许跑与改动直接相关的单个测试文件。**严禁跑全量测试或大批量测试**（如 `pytest tests/`、`pytest` 无参数），除非用户明确要求。`superpowers:verification-before-completion` 也须遵守此约束。
 3. **Migration**: 严禁直接运行数据库 Migration。
 4. **工具使用 (Using Your Tools)**:
    - **禁止使用 Bash 运行命令**：当有专用工具可用时。
@@ -47,6 +48,7 @@
 - **写代码/修改/重构** -> 自动应用 `coding-style`
 - **简化/精简代码** -> 自动应用 `code-simplifier`
 - **新功能/测试/测试用例/写测试/补测试/TDD/test/test case** -> 自动应用 `tdd-workflow`
+- **验证改动/跑测试/verify/test/check code** -> 自动应用 `precision-test`
 - **规划/组织工作/跟踪进度** -> 自动应用 `planning-with-files-cn`
 - **Dify/Prompt** -> 自动应用 `prompt-design`
 - **SQL 查询/数据库操作** -> 自动应用 `sql-query`
