@@ -16,5 +16,6 @@ ln -nfs $(pwd)/skills/sql-query/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/GoF-OOP/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/intent-clarifier/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/skill-craft/ ~/.claude/skills/
+ln -nfs $(pwd)/skills/karpathy-rules12/ ~/.claude/skills/
 
 ls -alF --color=always ~/.claude/skills/
