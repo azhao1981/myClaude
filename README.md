@@ -58,6 +58,8 @@ claude plugin install code-simplifier
 
 ## fable-5
 
+https://github.com/elder-plinius/CL4R1T4S
+
 ```bash
 claude --dangerously-skip-permissions --system-prompt-file docs/analysis/CLAUDE-FABLE-5.md
 ```
