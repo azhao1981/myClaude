@@ -56,6 +56,12 @@ claude plugin install code-simplifier
 ## Skill: Planning with Files
 这个是 manus 团队使用的技术，用于计划等
 
+## fable-5
+
+```bash
+claude --dangerously-skip-permissions --system-prompt-file docs/analysis/CLAUDE-FABLE-5.md
+```
+
 ## ref:
 
 [太狠了！把 Manus 核心秘诀做成 Skills 开源，Claude 瞬间进化！](https://mp.weixin.qq.com/s/0WV89hNCPgsa9lZwTLYABg)
