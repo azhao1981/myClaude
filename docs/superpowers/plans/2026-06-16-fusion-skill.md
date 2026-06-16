@@ -176,7 +176,7 @@ from run_fusion import build_omp_cmd, validate_judge_json, filter_panel_results
 
 
 def test_build_omp_cmd_has_blind_flags():
-    cmd = build_omp_cmd("xiaomi/mimo-v2.5-pro", "1+1?", Path("/tmp/panel.md"))
+    cmd = build_omp_cmd("xiaomi/mimo-v2.5-pro", "1+1?", "你是盲评专家")
     assert cmd[0] == "omp"
     assert "-p" in cmd
     assert "--no-skills" in cmd      # 防递归
@@ -186,11 +186,12 @@ def test_build_omp_cmd_has_blind_flags():
     assert "--no-session" in cmd     # 不留痕
     assert "--model" in cmd
     assert "xiaomi/mimo-v2.5-pro" in cmd
-    assert "@/tmp/panel.md" in cmd   # 盲评系统提示
+    assert "你是盲评专家" in cmd        # 系统提示内联
+    assert not any(str(x).startswith("@") for x in cmd)  # omp --system-prompt 不支持 @file
 
 
 def test_build_omp_cmd_question_is_last_arg():
-    cmd = build_omp_cmd("m", "我的问题", Path("/p.md"))
+    cmd = build_omp_cmd("m", "我的问题", "sysp")
     assert cmd[-1] == "我的问题"
 ```
 
@@ -238,12 +239,14 @@ JUDGE_KEYS = {
 }
 
 
-def build_omp_cmd(model, question, panel_prompt):
-    """构建单条 panel 的 omp 无头命令（盲评 + 防递归 + 不留痕）。"""
+def build_omp_cmd(model, question, system_prompt_text):
+    """构建单条 panel 的 omp 无头命令（盲评 + 防递归 + 不留痕）。
+    system_prompt_text 为已读取的提示文本（omp --system-prompt 不支持 @file，须内联）。
+    """
     return [
         "omp", "-p",
         "--no-tools", "--no-skills", "--no-extensions", "--no-rules", "--no-session",
-        "--system-prompt", f"@{panel_prompt}",
+        "--system-prompt", system_prompt_text,
         "--model", model,
         question,
     ]
@@ -431,9 +434,12 @@ git commit -m "implement filter_panel_results (TDD)"
 ```python
 
 
-async def call_panel(model, question, panel_prompt):
-    """跑单个 panel 模型。成功 {model, ok, content}；失败 {model, ok, error}。"""
-    cmd = build_omp_cmd(model, question, panel_prompt)
+async def call_panel(model, question, panel_prompt_path):
+    """跑单个 panel 模型。读取盲评提示文件内容后内联传入。
+    成功 {model, ok, content}；失败 {model, ok, error}。
+    """
+    system_prompt_text = Path(panel_prompt_path).read_text(encoding="utf-8")
+    cmd = build_omp_cmd(model, question, system_prompt_text)
     try:
         proc = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
         stdout, stderr = await proc.communicate()
