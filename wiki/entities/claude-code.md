@@ -45,4 +45,5 @@ Claude Code 和 [[codex]] 在五个核心模块上的设计高度一致，只是
 
 - [[boris-cherny]] — 创建者
 - [[loop-engineering]] — 其推动的范式
+- [[claude-code-settings]] — 四层 Scope 优先级与 `--settings` 合并规则
 - [[codex]] — 竞品对比

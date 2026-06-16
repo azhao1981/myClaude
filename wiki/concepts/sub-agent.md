@@ -53,3 +53,4 @@ Anthropic 内部工程师 Lance Martin 的实验发现：^[raw/articles/loop-fab
 
 - [[loop-engineering]] — Sub-agent 是其核心构件
 - [[claude-code]] / [[codex]] — 实现载体
+- [[multi-model-deliberation]] — 横向对照：跨模型互盲审议，与 sub-agent 纵向分工互补

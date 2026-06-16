@@ -38,6 +38,26 @@ sha256: <hex digest of the raw content below the frontmatter>
 ---
 ```
 
+## Wiki Syntax (Obsidian-flavored Markdown)
+
+Wiki pages use Obsidian-flavored Markdown. Conventions:
+
+- **Wikilink `[[page-name]]`** — wraps a target page's filename in double brackets.
+  - Obsidian auto-resolves it to a clickable link; in plain text readers / external LLMs it renders as the literal `[[page-name]]` string (the brackets are part of the syntax, not noise).
+  - Use the page slug (filename without `.md`), not the display title. Example: `[[loop-engineering]]` not `[[Loop Engineering]]`.
+  - Minimum 2 outbound `[[wikilinks]]` per page (see Conventions above).
+
+- **Provenance footnote `^[path/to/source.md]`** — appended after a paragraph that synthesizes a specific source.
+  - Renders as an Obsidian footnote (superscript marker linking to the source).
+  - In external contexts, treat the bracket contents as the source path; ignore the `^` prefix.
+  - Every claim that comes from a specific article should carry one. Multi-source paragraphs may chain several: `^[a.md]^[b.md]`.
+
+- **Frontmatter** — every page begins with a YAML block between `---` fences. See `Frontmatter` section above for fields. External readers that don't parse YAML will see the block as plain text; that's fine.
+
+- **Section depth** — prefer `##` headings inside pages (the H1 is reserved for the page title). Obsidian's outline panel relies on this.
+
+- **Tag values** — use the slugs from `Tag Taxonomy` below, lowercase, hyphen-case. Tags are free-form metadata, distinct from `[[wikilinks]]`.
+
 ## Tag Taxonomy
 - Paradigms: loop-engineering, prompt-engineering, agent-orchestration, automation
 - Components: skill, sub-agent, worktree, memory, automation, connector, mcp

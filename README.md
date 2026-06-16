@@ -63,6 +63,10 @@ https://github.com/elder-plinius/CL4R1T4S
 ```bash
 claude --dangerously-skip-permissions --system-prompt-file docs/analysis/CLAUDE-FABLE-5.md
 ```
+### claude-code-system-prompts
+https://github.com/Piebald-AI/claude-code-system-prompts
+
+- [ ] 和上面的 fable5 一起提取成写prompt和用prompt 的知识/SKILL
 
 ## ref:
 

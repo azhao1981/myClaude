@@ -10,6 +10,14 @@ confidence: high
 
 # Loop Engineering
 
+## TL;DR
+
+围绕 AI 编程智能体设计一个**可重复、可观察、可验证、可修正**的工作循环。^[raw/articles/loop-engineering-new-paradigm-2026.md]
+
+核心公式:**Loop = cron + 长在里面的决策者**^[raw/articles/loop-wtf-is-a-loop-2026.md]。六构件:Automation(自动化调度)、Worktree(工作树隔离)、Skill(技能)、Connector/MCP(连接器)、Sub-agent(子 Agent)、Memory(记忆)。五年代际:ReAct(2022)→ AutoGPT(2023)→ Ralph Loop(2025.7)→ /goal 命令(2026 春)→ 多 Agent 编排 Loop(2026.6)。主流落地产品:Claude Code(Anthropic)、Codex(OpenAI),均已具备上述全部构件。
+
+> "Loop Engineering，就是用你设计的系统替代你本人去提示 Agent。" —— Addy Osmani(谷歌云 AI 工程总监)^[raw/articles/loop-fable5-strictest-father-2026.md]
+
 ## 定义
 
 **Loop Engineering** 是围绕 AI 编程智能体设计一个可重复、可观察、可验证、可修正的工作循环。^[raw/articles/loop-engineering-new-paradigm-2026.md]
@@ -104,3 +112,14 @@ Loop 并非新概念，它有五年血统：^[raw/articles/loop-wtf-is-a-loop-20
 **Loop 是杠杆，不是替身。它能放大一个工程师的判断，也会放大一个工程师的缺席。**^[raw/articles/loop-engineering-new-paradigm-2026.md]
 
 Loop Engineering 比 Prompt Engineering 更难——它不只考验写提示词，还考验对软件工程流程、状态、边界、反馈和责任的理解。^[raw/articles/loop-engineering-new-paradigm-2026.md]
+
+## 相关页面
+
+- [[sub-agent]] — 六大构件之一，纵向分工（执行/验证）
+- [[automation]] — 六大构件之一，循环的心跳
+- [[worktree]] — 六大构件之一，并行隔离层
+- [[skill]] — 六大构件之一，可复用单位
+- [[mcp]] — Connector 的底层协议
+- [[ralph-loop]] — 进化阶梯第三阶段
+- [[multi-model-deliberation]] — 五大代际中"多 Agent 编排 Loop"阶段的代表性范式
+- [[prompt-vs-loop-engineering]] — 范式对比

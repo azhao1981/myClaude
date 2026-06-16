@@ -51,3 +51,4 @@ Boris 描述了工程师经历的三次认知转变：^[raw/articles/loop-fable5
 - [[loop-engineering]] — 他推动的范式
 - [[claude-code]] — 他创建的工具
 - [[prompt-vs-loop-engineering]] — 范式对比
+- [[claude-code-settings]] — 他设计的 settings 四层 Scope 体系

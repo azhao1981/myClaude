@@ -1,0 +1,3 @@
+# claude model switcher — source this file (. cmd.rc) then: cm <name> [extra args]
+# e.g. cm glm / cm deepseek / cm cli / cm moonshot
+cm() { claude --setting-sources user --settings "$HOME/.claude/models/$1.json" "${@:2}"; }
