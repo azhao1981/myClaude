@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from run_fusion import build_omp_cmd, validate_judge_json, filter_panel_results
+from run_fusion import build_omp_cmd, validate_judge_json, filter_panel_results, safe_decode
 
 
 def test_build_omp_cmd_has_blind_flags():
@@ -58,3 +58,12 @@ def test_filter_panel_results_all_failed():
     responses, failed = filter_panel_results(results)
     assert responses == []
     assert len(failed) == 1
+
+
+def test_safe_decode_handles_truncated_multibyte():
+    # 0xe9 是 UTF-8 多字节字符首字节，单独出现即截断/非法（重现 glm 64KB 边界截断 bug）
+    assert safe_decode(b"abc\xe9") == "abc�"
+
+
+def test_safe_decode_strips_whitespace():
+    assert safe_decode(b"  hello\n\n") == "hello"

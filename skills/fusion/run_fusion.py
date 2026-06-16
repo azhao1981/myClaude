@@ -52,6 +52,11 @@ def filter_panel_results(results):
     return responses, failed
 
 
+def safe_decode(data: bytes) -> str:
+    """安全解码字节流：遇非法/截断的多字节字符用替换符，不抛异常。"""
+    return data.decode(errors="replace").strip()
+
+
 async def call_panel(model, question, panel_prompt_path):
     """跑单个 panel 模型。读取盲评提示文件内容后内联传入。
     成功 {model, ok, content}；失败 {model, ok, error}。
@@ -62,8 +67,8 @@ async def call_panel(model, question, panel_prompt_path):
         proc = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
         stdout, stderr = await proc.communicate()
         if proc.returncode != 0:
-            return {"model": model, "ok": False, "error": stderr.decode().strip()}
-        return {"model": model, "ok": True, "content": stdout.decode().strip()}
+            return {"model": model, "ok": False, "error": safe_decode(stderr)}
+        return {"model": model, "ok": True, "content": safe_decode(stdout)}
     except Exception as e:
         return {"model": model, "ok": False, "error": f"{type(e).__name__}: {e}"}
 
