@@ -24,3 +24,19 @@ def test_build_omp_cmd_has_blind_flags():
 def test_build_omp_cmd_question_is_last_arg():
     cmd = build_omp_cmd("m", "我的问题", "sysp")
     assert cmd[-1] == "我的问题"
+
+
+def test_validate_judge_json_all_keys_present():
+    assert validate_judge_json({
+        "consensus": [], "contradictions": [],
+        "partial_coverage": [], "unique_insights": [], "blind_spots": [],
+    }) is True
+
+
+def test_validate_judge_json_missing_key():
+    assert validate_judge_json({"consensus": [], "contradictions": []}) is False
+
+
+def test_validate_judge_json_not_dict():
+    assert validate_judge_json([]) is False
+    assert validate_judge_json("not a dict") is False

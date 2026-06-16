@@ -41,8 +41,8 @@ def build_omp_cmd(model, question, system_prompt_text):
 
 
 def validate_judge_json(data):
-    """[Task 5 实现】裁判 JSON 必须是含五键的 dict。"""
-    raise NotImplementedError
+    """裁判 JSON 必须是含五键的 dict。"""
+    return isinstance(data, dict) and JUDGE_KEYS.issubset(data.keys())
 
 
 def filter_panel_results(results):
