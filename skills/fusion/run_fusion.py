@@ -46,5 +46,7 @@ def validate_judge_json(data):
 
 
 def filter_panel_results(results):
-    """[Task 6 实现】把 panel 结果分流为 (responses, failed)。"""
-    raise NotImplementedError
+    """把 panel 结果分流为 (成功 responses, 失败 failed)。"""
+    responses = [r for r in results if r.get("ok")]
+    failed = [r for r in results if not r.get("ok")]
+    return responses, failed

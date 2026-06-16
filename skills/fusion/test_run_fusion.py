@@ -40,3 +40,21 @@ def test_validate_judge_json_missing_key():
 def test_validate_judge_json_not_dict():
     assert validate_judge_json([]) is False
     assert validate_judge_json("not a dict") is False
+
+
+def test_filter_panel_results_splits_ok_and_failed():
+    results = [
+        {"model": "a", "ok": True, "content": "ans"},
+        {"model": "b", "ok": False, "error": "boom"},
+        {"model": "c", "ok": True, "content": "ans2"},
+    ]
+    responses, failed = filter_panel_results(results)
+    assert [r["model"] for r in responses] == ["a", "c"]
+    assert [r["model"] for r in failed] == ["b"]
+
+
+def test_filter_panel_results_all_failed():
+    results = [{"model": "a", "ok": False, "error": "x"}]
+    responses, failed = filter_panel_results(results)
+    assert responses == []
+    assert len(failed) == 1
