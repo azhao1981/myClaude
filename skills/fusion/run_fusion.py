@@ -50,3 +50,68 @@ def filter_panel_results(results):
     responses = [r for r in results if r.get("ok")]
     failed = [r for r in results if not r.get("ok")]
     return responses, failed
+
+
+async def call_panel(model, question, panel_prompt_path):
+    """跑单个 panel 模型。读取盲评提示文件内容后内联传入。
+    成功 {model, ok, content}；失败 {model, ok, error}。
+    """
+    system_prompt_text = Path(panel_prompt_path).read_text(encoding="utf-8")
+    cmd = build_omp_cmd(model, question, system_prompt_text)
+    try:
+        proc = await asyncio.create_subprocess_exec(*cmd, stdout=PIPE, stderr=PIPE)
+        stdout, stderr = await proc.communicate()
+        if proc.returncode != 0:
+            return {"model": model, "ok": False, "error": stderr.decode().strip()}
+        return {"model": model, "ok": True, "content": stdout.decode().strip()}
+    except Exception as e:
+        return {"model": model, "ok": False, "error": f"{type(e).__name__}: {e}"}
+
+
+async def run_panel(models, question, panel_prompt):
+    """并行 fan-out 全部 panel 模型，返回 (responses, failed)。"""
+    tasks = [call_panel(m, question, panel_prompt) for m in models]
+    results = await asyncio.gather(*tasks)
+    return filter_panel_results(results)
+
+
+async def main(question, models, out_dir):
+    """编排：fan-out panel → 降级判定 → 落盘 JSON。返回结果 dict。"""
+    responses, failed = await run_panel(models, question, PROMPTS_DIR / "panel.md")
+    if not responses:
+        result = {
+            "status": "error",
+            "failure_reason": "all_panels_failed",
+            "failed_models": failed,
+        }
+    else:
+        result = {
+            "status": "ok" if not failed else "partial",
+            "question": question,
+            "models": models,
+            "panel": responses,
+            "failed_models": failed or None,
+        }
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / f"fusion_{int(time.time())}.json"
+    path.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    result["saved_to"] = str(path)
+    return result
+
+
+def parse_args(argv):
+    p = argparse.ArgumentParser(description="Fusion panel fan-out via omp")
+    p.add_argument("question", help="要审议的问题")
+    p.add_argument("--models", default=None, help="逗号分隔的模型列表，默认三人组")
+    p.add_argument("--out", default="tmp", help="结果落盘目录")
+    a = p.parse_args(argv)
+    models = a.models.split(",") if a.models else list(DEFAULT_PANEL)
+    return a.question, [m.strip() for m in models], Path(a.out)
+
+
+if __name__ == "__main__":
+    _q, _models, _out = parse_args(sys.argv[1:])
+    _result = asyncio.run(main(_q, _models, _out))
+    print(json.dumps(_result, ensure_ascii=False, indent=2))
+    if _result.get("status") == "error":
+        sys.exit(1)
