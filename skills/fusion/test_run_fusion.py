@@ -3,7 +3,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from run_fusion import build_omp_cmd, validate_judge_json, filter_panel_results, safe_decode
+from run_fusion import (
+    build_omp_cmd,
+    validate_judge_json,
+    filter_panel_results,
+    safe_decode,
+    read_prompt,
+    format_output,
+)
 
 
 def test_build_omp_cmd_has_blind_flags():
@@ -67,3 +74,32 @@ def test_safe_decode_handles_truncated_multibyte():
 
 def test_safe_decode_strips_whitespace():
     assert safe_decode(b"  hello\n\n") == "hello"
+
+
+def test_read_prompt_prefers_prompt_file(tmp_path):
+    f = tmp_path / "p.md"
+    f.write_text("from file", encoding="utf-8")
+    assert read_prompt("argv", str(f), "stdin") == "from file"
+
+
+def test_read_prompt_uses_stdin_on_dash():
+    assert read_prompt("-", None, "stdin text") == "stdin text"
+
+
+def test_read_prompt_uses_argv_when_no_file():
+    assert read_prompt("argv q", None, "") == "argv q"
+
+
+def test_format_output_small_returns_full_json():
+    result = {"status": "ok", "saved_to": "tmp/x.json", "panel": []}
+    out = format_output(result, threshold=8192)
+    assert '"status": "ok"' in out
+    assert '"large"' not in out
+
+
+def test_format_output_large_returns_pointer_only():
+    big = {"status": "ok", "saved_to": "tmp/x.json", "panel": [{"content": "x" * 20000}]}
+    out = format_output(big, threshold=8192)
+    assert '"large": true' in out
+    assert '"saved_to": "tmp/x.json"' in out
+    assert "x" * 20000 not in out  # 大内容不进 stdout，只给指针

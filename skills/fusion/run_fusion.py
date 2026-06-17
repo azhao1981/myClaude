@@ -25,6 +25,7 @@ JUDGE_KEYS = {
     "unique_insights",
     "blind_spots",
 }
+LARGE_THRESHOLD = 8192  # result JSON 超 8KB → stdout 只给指针，详情读落盘文件
 
 
 def build_omp_cmd(model, question, system_prompt_text):
@@ -55,6 +56,30 @@ def filter_panel_results(results):
 def safe_decode(data: bytes) -> str:
     """安全解码字节流：遇非法/截断的多字节字符用替换符，不抛异常。"""
     return data.decode(errors="replace").strip()
+
+
+def read_prompt(argv_question, prompt_file, stdin_text):
+    """读取 panel 输入：优先 --prompt-file，其次 stdin（argv question == "-"），最后 argv。
+    argv 有 ARG_MAX 物理限制，超大输入必须用文件/stdin。
+    """
+    if prompt_file:
+        return Path(prompt_file).read_text(encoding="utf-8")
+    if argv_question in (None, "-"):
+        return stdin_text
+    return argv_question
+
+
+def format_output(result, threshold=LARGE_THRESHOLD):
+    """大结果只输出指针（指向落盘文件），小结果输出完整 JSON。"""
+    full = json.dumps(result, ensure_ascii=False, indent=2)
+    size = len(full.encode("utf-8"))
+    if size > threshold:
+        return json.dumps(
+            {"large": True, "saved_to": result.get("saved_to"),
+             "status": result.get("status"), "size": size},
+            ensure_ascii=False, indent=2,
+        )
+    return full
 
 
 async def call_panel(model, question, panel_prompt_path):
@@ -106,17 +131,23 @@ async def main(question, models, out_dir):
 
 def parse_args(argv):
     p = argparse.ArgumentParser(description="Fusion panel fan-out via omp")
-    p.add_argument("question", help="要审议的问题")
+    p.add_argument("question", nargs="?", default=None,
+                   help="要审议的问题；'-' 读 stdin；大输入用 --prompt-file")
+    p.add_argument("--prompt-file", default=None, help="从文件读取问题（大输入主推）")
     p.add_argument("--models", default=None, help="逗号分隔的模型列表，默认三人组")
     p.add_argument("--out", default="tmp", help="结果落盘目录")
     a = p.parse_args(argv)
     models = a.models.split(",") if a.models else list(DEFAULT_PANEL)
-    return a.question, [m.strip() for m in models], Path(a.out)
+    return a.question, a.prompt_file, [m.strip() for m in models], Path(a.out)
 
 
 if __name__ == "__main__":
-    _q, _models, _out = parse_args(sys.argv[1:])
+    _argv_q, _prompt_file, _models, _out = parse_args(sys.argv[1:])
+    _stdin = sys.stdin.read() if (_argv_q in (None, "-") and not _prompt_file) else ""
+    _q = read_prompt(_argv_q, _prompt_file, _stdin)
+    if not _q.strip():
+        sys.exit("error: 缺少问题（用位置参数 / --prompt-file / stdin '-' 提供）")
     _result = asyncio.run(main(_q, _models, _out))
-    print(json.dumps(_result, ensure_ascii=False, indent=2))
+    print(format_output(_result))
     if _result.get("status") == "error":
         sys.exit(1)
