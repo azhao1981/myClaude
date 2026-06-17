@@ -1,8 +1,47 @@
-# claude/omp switchers — source this file (. cmd.rc) then use the commands below
-#   cm  <name> [args]    claude with ~/.claude/models/<name>.json
-#   cmy <name> [args]    same as cm + --dangerously-skip-permissions (yolo, no approval)
-#   om  <model> [args]   omp --model <model> (省去 --model)
-# e.g. cm glm / cmy deepseek / om mimo -p "prompt"
-cm()  { claude --setting-sources user --settings "$HOME/.claude/models/$1.json" "${@:2}"; }
-cmy() { cm "$1" "${@:2}" --dangerously-skip-permissions; }
-om()  { omp --model "$1" "${@:2}"; }
+# claude/omp switchers — source this file (. cmd.rc)
+#   cm/cmy <name>     claude + ~/.claude/models/<name>.json  (cmy = 不审批)
+#   om/omy <简写>     omp --model <全称>                     (omy = 不审批; 无头加 -p)
+#   cm (无参)         显示帮助（模型清单 + 简写）
+# e.g. cm glm / cmy deepseek / om mimo -p "prompt" / omy mimo
+
+# omp 模型简写 → 全称（om/omy 用；直接传全称也行）
+declare -A OMP_MODELS=(
+  [glm]="zhipu/glm-5.2"
+  [deepseek]="deepseek/deepseek-v4-pro"
+  [minimax]="minimax-code-cn/minimax-m3"
+  [mimo]="xiaomi/mimo-v2.5-pro"
+  [moonshot]="moonshot/kimi-k2.7-code"
+  [gpt]="openai-proxy/gpt-5.5"
+)
+
+cmhelp() {
+  echo "用法:"
+  echo "  cm  <name> [args]    claude + ~/.claude/models/<name>.json"
+  echo "  cmy <name> [args]    cm + 不审批 (--dangerously-skip-permissions)"
+  echo "  om  <简写> [args]    omp --model <全称>（无头加 -p）"
+  echo "  omy <简写> [args]    om + 不审批 (--auto-approve)"
+  echo
+  echo "claude 模型（cm/cmy <name>，= ~/.claude/models/ 下文件名）:"
+  ls ~/.claude/models/ 2>/dev/null | sed 's/\.json$//' | tr '\n' ' '; echo; echo
+  echo "omp 简写（om/omy <简写> → omp --model <全称>）:"
+  for k in "${!OMP_MODELS[@]}"; do
+    printf "  %-10s %s\n" "$k" "${OMP_MODELS[$k]}"
+  done
+}
+
+cm() {
+  [[ -z "$1" ]] && { cmhelp; return; }
+  claude --setting-sources user --settings "$HOME/.claude/models/$1.json" "${@:2}"
+}
+cmy() {
+  [[ -z "$1" ]] && { cmhelp; return; }
+  cm "$1" "${@:2}" --dangerously-skip-permissions
+}
+om() {
+  local model="${OMP_MODELS[$1]:-$1}"
+  omp --model "$model" "${@:2}"
+}
+omy() {
+  local model="${OMP_MODELS[$1]:-$1}"
+  omp --auto-approve --model "$model" "${@:2}"
+}
