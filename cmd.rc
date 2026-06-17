@@ -1,3 +1,8 @@
-# claude model switcher — source this file (. cmd.rc) then: cm <name> [extra args]
-# e.g. cm glm / cm deepseek / cm cli / cm moonshot
-cm() { claude --setting-sources user --settings "$HOME/.claude/models/$1.json" "${@:2}"; }
+# claude/omp switchers — source this file (. cmd.rc) then use the commands below
+#   cm  <name> [args]    claude with ~/.claude/models/<name>.json
+#   cmy <name> [args]    same as cm + --dangerously-skip-permissions (yolo, no approval)
+#   om  <model> [args]   omp --model <model> (省去 --model)
+# e.g. cm glm / cmy deepseek / om mimo -p "prompt"
+cm()  { claude --setting-sources user --settings "$HOME/.claude/models/$1.json" "${@:2}"; }
+cmy() { cm "$1" "${@:2}" --dangerously-skip-permissions; }
+om()  { omp --model "$1" "${@:2}"; }
