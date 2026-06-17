@@ -38,10 +38,12 @@ cmy() {
   cm "$1" "${@:2}" --dangerously-skip-permissions
 }
 om() {
+  [[ -z "$1" ]] && { cmhelp; return; }
   local model="${OMP_MODELS[$1]:-$1}"
   omp --model "$model" "${@:2}"
 }
 omy() {
+  [[ -z "$1" ]] && { cmhelp; return; }
   local model="${OMP_MODELS[$1]:-$1}"
   omp --auto-approve --model "$model" "${@:2}"
 }
