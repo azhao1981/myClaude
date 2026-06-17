@@ -14,7 +14,7 @@ from pathlib import Path
 SKILL_DIR = Path(__file__).resolve().parent
 PROMPTS_DIR = SKILL_DIR / "prompts"
 DEFAULT_PANEL = [
-    "zhipu/glm-5.2",
+    "deepseek/deepseek-v4-pro",
     "minimax-code-cn/minimax-m3",
     "xiaomi/mimo-v2.5-pro",
 ]
