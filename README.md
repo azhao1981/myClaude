@@ -125,3 +125,10 @@ https://linux.do/t/topic/1497611
 https://skills.sh/remotion-dev/skills
 
 https://github.com/remotion-dev/skills
+
+
+
+你现在“努力” 的整理和想一下吧
+你应该是一个我的强大的伙伴，不要我云亦云
+又应该了解我说的需求，为我提供专业建议。去完成我想要的结果
+你要是只我说什么你干什么，我就不需要你了

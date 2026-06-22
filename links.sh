@@ -19,6 +19,7 @@ ln -nfs $(pwd)/skills/skill-craft/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/karpathy-rules12/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/web-research/ ~/.claude/skills/
 ln -nfs $(pwd)/skills/fusion ~/.claude/skills/
+ln -nfs $(pwd)/skills/active-partner ~/.claude/skills/
 
 ln -nfs $(pwd)/.claude/models ~/.claude/models
 
