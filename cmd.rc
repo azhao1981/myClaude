@@ -10,6 +10,7 @@ declare -A OMP_MODELS=(
   [deepseek]="deepseek/deepseek-v4-pro"
   [minimax]="minimax-code-cn/minimax-m3"
   [mimo]="xiaomi/mimo-v2.5-pro"
+  [speed]="xiaomi/mimo-v2.5-pro-ultraspeed"
   [moonshot]="moonshot/kimi-k2.7-code"
   [gpt]="openai-proxy/gpt-5.5"
   [ark]="ark/ark-code-latest"
